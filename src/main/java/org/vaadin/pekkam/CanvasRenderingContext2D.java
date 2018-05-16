@@ -64,17 +64,11 @@ public class CanvasRenderingContext2D {
      *            the y-coordinate of the top-left corner of the image
      */
     public void drawImage(String src, double x, double y) {
-        canvas.getElement().getNode().runWhenAttached(
-                // This structure is needed to make the execution order work
-                // with Element.callFunction() which is used in callJsMethod()
-                ui -> ui.getInternals().getStateTree().beforeClientResponse(
-                        canvas.getElement().getNode(),
-                        context -> ui.getPage().executeJavaScript(
-                                String.format("var zwKqdZ = new Image();"
-                                        + "zwKqdZ.onload = function () {"
-                                        + "$0.getContext('2d').drawImage(zwKqdZ, %s, %s);};"
-                                        + "zwKqdZ.src='%s';", x, y, src),
-                                canvas.getElement())));
+        runScript(String.format(
+                "var zwKqdZ = new Image();" + "zwKqdZ.onload = function () {"
+                        + "$0.getContext('2d').drawImage(zwKqdZ, %s, %s);};"
+                        + "zwKqdZ.src='%s';",
+                x, y, src));
     }
 
     /**
@@ -96,18 +90,10 @@ public class CanvasRenderingContext2D {
      */
     public void drawImage(String src, double x, double y, double width,
             double height) {
-        canvas.getElement().getNode().runWhenAttached(
-                // This structure is needed to make the execution order work
-                // with Element.callFunction() which is used in callJsMethod()
-                ui -> ui.getInternals().getStateTree().beforeClientResponse(
-                        canvas.getElement().getNode(),
-                        context -> ui.getPage().executeJavaScript(String.format(
-                                "var zwKqdZ = new Image();"
-                                        + "zwKqdZ.onload = function () {"
-                                        + "$0.getContext('2d').drawImage(zwKqdZ, %s, %s, %s, %s);};"
-                                        + "zwKqdZ.src='%s';",
-                                x, y, width, height, src),
-                                canvas.getElement())));
+        runScript(String.format("var zwKqdZ = new Image();"
+                + "zwKqdZ.onload = function () {"
+                + "$0.getContext('2d').drawImage(zwKqdZ, %s, %s, %s, %s);};"
+                + "zwKqdZ.src='%s';", x, y, width, height, src));
     }
 
     public void fill() {
@@ -167,16 +153,22 @@ public class CanvasRenderingContext2D {
     }
 
     protected void setProperty(String propertyName, Serializable value) {
+        runScript(String.format("$0.getContext('2d').%s='%s'", propertyName,
+                value));
+    }
+
+    /**
+     * Runs the given js so that the execution order works with callJsMethod().
+     * Any $0 in the script will refer to the canvas element.
+     */
+    private void runScript(String script) {
         canvas.getElement().getNode().runWhenAttached(
                 // This structure is needed to make the execution order work
                 // with Element.callFunction() which is used in callJsMethod()
                 ui -> ui.getInternals().getStateTree().beforeClientResponse(
                         canvas.getElement().getNode(),
-                        context -> ui.getPage().executeJavaScript(
-                                String.format("$0.getContext('2d').%s='%s'",
-                                        propertyName, value),
+                        context -> ui.getPage().executeJavaScript(script,
                                 canvas.getElement())));
-
     }
 
     protected void callJsMethod(String methodName, Serializable... parameters) {
