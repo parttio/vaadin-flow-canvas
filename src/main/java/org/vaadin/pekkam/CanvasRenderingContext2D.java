@@ -65,10 +65,13 @@ public class CanvasRenderingContext2D {
      */
     public void drawImage(String src, double x, double y) {
         runScript(String.format(
-                "var zwKqdZ = new Image();" + "zwKqdZ.onload = function () {"
-                        + "$0.getContext('2d').drawImage(zwKqdZ, %s, %s);};"
-                        + "zwKqdZ.src='%s';",
-                x, y, src));
+        //@formatter:off
+            "var img = new Image();"
+          + "img.onload = function () {"
+          +   "$0.getContext('2d').drawImage(img, %s, %s);"
+          + "};"
+          + "img.src='%s';", x, y, src));
+        //@formatter:on
     }
 
     /**
@@ -90,10 +93,14 @@ public class CanvasRenderingContext2D {
      */
     public void drawImage(String src, double x, double y, double width,
             double height) {
-        runScript(String.format("var zwKqdZ = new Image();"
-                + "zwKqdZ.onload = function () {"
-                + "$0.getContext('2d').drawImage(zwKqdZ, %s, %s, %s, %s);};"
-                + "zwKqdZ.src='%s';", x, y, width, height, src));
+        runScript(String.format(
+        //@formatter:off
+            "var img = new Image();"
+          + "img.onload = function () {"
+          +   "$0.getContext('2d').drawImage(img, %s, %s, %s, %s);"
+          + "};"
+          + "img.src='%s';", x, y, width, height, src));
+        //@formatter:on
     }
 
     public void fill() {
