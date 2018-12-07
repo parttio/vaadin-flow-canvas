@@ -5,7 +5,7 @@
 
     <groupId>org.vaadin.pekkam</groupId>
     <artifactId>canvas-java</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Canvas Java</name>
     <description>Integration of HTML5 canvas for Vaadin Platform</description>
 
