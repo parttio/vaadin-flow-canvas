@@ -22,7 +22,7 @@ public class CanvasRenderingContext2D {
     }
 
     public void setStrokeStyle(String strokeStyle) {
-        setProperty("fillStyle", strokeStyle);
+        setProperty("strokeStyle", strokeStyle);
     }
 
     public void setLineWidth(double lineWidth) {
