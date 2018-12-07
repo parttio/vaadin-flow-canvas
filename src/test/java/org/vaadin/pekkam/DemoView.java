@@ -1,6 +1,8 @@
 package org.vaadin.pekkam;
 
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Input;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.router.Route;
 
@@ -26,6 +28,12 @@ public class DemoView extends Div {
                 e -> ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)));
 
         add(canvas, buttons);
+
+        Input input = new Input();
+        input.setValue("resources/vaadin-logo.svg");
+        NativeButton drawImageButton = new NativeButton("Draw image",
+                e -> ctx.drawImage(input.getValue(), 0, 0));
+        add(new Label("Image src: "), input, drawImageButton);
     }
 
     private void drawHouse() {
