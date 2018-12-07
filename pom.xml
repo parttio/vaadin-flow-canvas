@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.vaadin.pekkam</groupId>
     <artifactId>canvas-java</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>Canvas Java</name>
-    <description>Integration of HTML5 canvas for Vaadin 10</description>
+    <description>Integration of HTML5 canvas for Vaadin Platform</description>
 
     <properties>
-        <vaadin.version>10.0.0.beta10</vaadin.version>
+        <vaadin.version>12.0.0</vaadin.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -85,12 +85,15 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.3.7.v20160115</version>
+                <version>9.4.11.v20180605</version>
                 <configuration>
                     <scanIntervalSeconds>-1</scanIntervalSeconds>
                     <!-- Use test scope because the UI/demo classes are in 
                         the test package. -->
                     <useTestScope>true</useTestScope>
+                    <supportedPackagings>
+                        <supportedPackaging>jar</supportedPackaging>
+                    </supportedPackagings>
                 </configuration>
             </plugin>
         </plugins>
@@ -104,7 +107,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.6</version>
+                        <version>3.1.0</version>
                         <configuration>
                             <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
@@ -137,7 +140,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
+                        <version>3.0.1</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
