@@ -11,7 +11,7 @@ Add the dependency to your Vaadin 10+ project's `pom.xml`:
 <dependency>
     <groupId>org.vaadin.pekkam</groupId>
     <artifactId>canvas-java</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
