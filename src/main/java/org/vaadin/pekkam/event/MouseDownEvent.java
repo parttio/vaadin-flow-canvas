@@ -1,9 +1,3 @@
-/*
- * $Header$
- *
- * $DateTime$
- * Copyright (c) 2020 Celera Systems LLC, All Rights Reserved.
- */
 package org.vaadin.pekkam.event;
 
 import com.vaadin.flow.component.DomEvent;
