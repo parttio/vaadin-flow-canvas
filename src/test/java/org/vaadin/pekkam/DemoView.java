@@ -5,6 +5,7 @@ import com.vaadin.flow.component.html.Input;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.router.Route;
+import org.vaadin.pekkam.event.MouseEvent;
 
 @Route("")
 public class DemoView extends Div {
@@ -31,9 +32,37 @@ public class DemoView extends Div {
 
         Input input = new Input();
         input.setValue("resources/vaadin-logo.svg");
+        NativeButton loadImageButton = new NativeButton("Load image", e -> canvas.loadImage(input.getValue()));
         NativeButton drawImageButton = new NativeButton("Draw image",
                 e -> ctx.drawImage(input.getValue(), 0, 0));
-        add(new Label("Image src: "), input, drawImageButton);
+        NativeButton drawPatButton = new NativeButton("Fill pattern", e->drawPattern(input.getValue()));
+        add(new Label("Image src: "), input, loadImageButton, drawImageButton, drawPatButton);
+
+        canvas.getElement().setAttribute("tabindex", "1");
+        canvas.addMouseDownListener(e -> logEvent("down", e));
+        canvas.addMouseUpListener(e -> logEvent("up", e));
+        canvas.addMouseMoveListener(e -> logEvent("move", e));
+        canvas.addMouseClickListener(e -> logEvent("click", e));
+        canvas.addMouseDblClickListener(e -> logEvent("dblClick", e));
+        canvas.addKeyDownListener(e -> {
+            System.out.println("key :" + e.getKey().getKeys().get(0));
+        });
+        canvas.addImageLoadListener(e -> {
+            System.out.println("image loaded: " + e.getSrc());
+        });
+    }
+
+    private void logEvent(String eventType, MouseEvent me)
+    {
+        System.out.println("mouse " + eventType + ": x=" + me.getClientX() + ", y=" + me.getClientY() + ", btn=" + me.getButton());
+    }
+
+    private void drawPattern(String src)
+    {
+        ctx.save();
+        ctx.setPatternFillStyle(src, "repeat");
+        ctx.fillRect(200, 200, 100, 100);
+        ctx.restore();
     }
 
     private void drawHouse() {

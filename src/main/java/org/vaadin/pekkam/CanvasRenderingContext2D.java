@@ -21,8 +21,33 @@ public class CanvasRenderingContext2D {
         setProperty("fillStyle", fillStyle);
     }
 
+    public void setPatternFillStyle(String src, String type)
+    {
+        runScript(String.format(
+           "if ($0.images) {"
+              + "var img = $0.images['%s'];"
+              + "if (img) {"
+              +   "var ctx = $0.getContext('2d');"
+              +   "var pat = ctx.createPattern(img, '%s');"
+              +   "ctx.fillStyle = pat;"
+              + "}"
+              + "}", src, type));
+    }
+
     public void setStrokeStyle(String strokeStyle) {
         setProperty("strokeStyle", strokeStyle);
+    }
+
+    public void setPatternStrokeStyle(String src, String type)
+    {
+        runScript(String.format(
+           "var img = new Image();"
+              + "img.onload = function () {"
+              +   "var ctx = $0.getContext('2d');"
+              +   "var pat = ctx.createPattern(img, '%s');"
+              +   "ctx.strokeStyle = pat;"
+              + "};"
+              + "img.src='%s';", type, src));
     }
 
     public void setLineWidth(double lineWidth) {
