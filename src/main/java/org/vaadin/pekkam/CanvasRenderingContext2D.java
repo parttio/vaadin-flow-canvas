@@ -21,6 +21,13 @@ public class CanvasRenderingContext2D {
         setProperty("fillStyle", fillStyle);
     }
 
+    /**
+     * Set a pattern to use as a fill style. Must reference an image source previously loaded
+     * with Canvas.loadImage().
+     *
+     * @param src the path to the image resource
+     * @param type the pattern repeat type (see the Canvas API)
+     */
     public void setPatternFillStyle(String src, String type)
     {
         runScript(String.format(
@@ -38,16 +45,24 @@ public class CanvasRenderingContext2D {
         setProperty("strokeStyle", strokeStyle);
     }
 
+    /**
+     * Set a pattern to use as a strok -style. Must reference an image source previously loaded
+     * with Canvas.loadImage().
+     *
+     * @param src the path to the image resource
+     * @param type the pattern repeat type (see the Canvas API)
+     */
     public void setPatternStrokeStyle(String src, String type)
     {
         runScript(String.format(
-           "var img = new Image();"
-              + "img.onload = function () {"
+           "if ($0.images) {"
+              + "var img = $0.images['%s'];"
+              + "if (img) {"
               +   "var ctx = $0.getContext('2d');"
               +   "var pat = ctx.createPattern(img, '%s');"
               +   "ctx.strokeStyle = pat;"
-              + "};"
-              + "img.src='%s';", type, src));
+              + "}"
+              + "}", src, type));
     }
 
     public void setLineWidth(double lineWidth) {

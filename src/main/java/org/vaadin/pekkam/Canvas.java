@@ -97,6 +97,13 @@ public class Canvas extends Component implements HasStyle, HasSize {
         HasSize.super.setSizeFull();
     }
 
+    /**
+     * Load an image resource an prepare it for use as a fill or stroke style. Since images are loaded
+     * asyncronously, you need to wait until you receive the associated ImageLoadEvent. Register an
+     * event listener using addImageLoadListener().
+     *
+     * @param src the path to the image resource
+     */
     public void loadImage(String src)
     {
         getElement().executeJavaScript(
