@@ -16,7 +16,7 @@ import org.vaadin.pekkam.event.*;
  */
 @Tag("canvas")
 @SuppressWarnings("serial")
-public class Canvas extends Component implements HasStyle, HasSize {
+public class Canvas extends Component implements HasStyle, HasSize, KeyNotifier {
     private CanvasRenderingContext2D context;
 
     /**
@@ -148,11 +148,6 @@ public class Canvas extends Component implements HasStyle, HasSize {
     public Registration addMouseDblClickListener(ComponentEventListener<MouseDblClickEvent> listener)
     {
         return addListener(MouseDblClickEvent.class, listener);
-    }
-
-    public Registration addKeyDownListener(ComponentEventListener<KeyDownEvent> listener)
-    {
-        return addListener(KeyDownEvent.class, listener);
     }
 
     public Registration addImageLoadListener(ComponentEventListener<ImageLoadEvent> listener)
