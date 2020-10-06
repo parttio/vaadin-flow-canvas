@@ -93,8 +93,8 @@ public class CanvasRenderingContext2D {
     /**
      * Fetches the image from the given location and draws it on the canvas.
      * <p>
-     * <b>NOTE:</b> The drawing will happen asynchronously after the browser has
-     * received the image.
+     * <b>NOTE:</b> Unless you have previously loaded the image with Canvas.loadImage, the
+     * drawing will happen asynchronously after the browser has retrieved the image.
      * 
      * @param src
      *            the url of the image to draw
@@ -106,19 +106,26 @@ public class CanvasRenderingContext2D {
     public void drawImage(String src, double x, double y) {
         runScript(String.format(
         //@formatter:off
-            "var img = new Image();"
-          + "img.onload = function () {"
-          +   "$0.getContext('2d').drawImage(img, %s, %s);"
-          + "};"
-          + "img.src='%s';", x, y, src));
+            "var img = null;"
+          + "if ($0.images) img = $0.images['%s'];"
+          + "if (img != null)"
+          + "  $0.getContext('2d').drawImage(img, %s, %s);"
+          + "else {"
+          + "  img = new Image();"
+          + "  img.onload = function () {"
+          + "    $0.getContext('2d').drawImage(img, %s, %s);"
+          + "  };"
+          + "  img.src='%s';"
+          + "}",
+           src, x, y, x, y, src));
         //@formatter:on
     }
 
     /**
      * Fetches the image from the given location and draws it on the canvas.
      * <p>
-     * <b>NOTE:</b> The drawing will happen asynchronously after the browser has
-     * received the image.
+     * <b>NOTE:</b> Unless you have previously loaded the image with Canvas.loadImage, the
+     * drawing will happen asynchronously after the browser has retrieved the image.
      * 
      * @param src
      *            the url of the image to draw
@@ -135,11 +142,18 @@ public class CanvasRenderingContext2D {
             double height) {
         runScript(String.format(
         //@formatter:off
-            "var img = new Image();"
-          + "img.onload = function () {"
-          +   "$0.getContext('2d').drawImage(img, %s, %s, %s, %s);"
-          + "};"
-          + "img.src='%s';", x, y, width, height, src));
+           "var img = null;"
+              + "if ($0.images) img = $0.images['%s'];"
+              + "if (img != null)"
+              + "  $0.getContext('2d').drawImage(img, %s, %s, %s, %s);"
+              + "else {"
+              + "  img = new Image();"
+              + "  img.onload = function () {"
+              + "    $0.getContext('2d').drawImage(img, %s, %s, %s, %s);"
+              + "  };"
+              + "  img.src='%s';"
+              + "}",
+           src, x, y, width, height, x, y, width, height, src));
         //@formatter:on
     }
 
