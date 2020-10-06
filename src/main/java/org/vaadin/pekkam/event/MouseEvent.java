@@ -5,8 +5,8 @@ import org.vaadin.pekkam.Canvas;
 
 public class MouseEvent extends ComponentEvent<Canvas>
 {
-   private int clientX;
-   private int clientY;
+   private int offsetX;
+   private int offsetY;
    private int button;
 
    public MouseEvent(
@@ -18,29 +18,29 @@ public class MouseEvent extends ComponentEvent<Canvas>
    )
    {
       super(source, fromClient);
-      this.clientX = clientX;
-      this.clientY = clientY;
+      this.offsetX = clientX;
+      this.offsetY = clientY;
       this.button = button;
    }
 
-   public int getClientX()
+   public int getOffsetX()
    {
-      return clientX;
+      return offsetX;
    }
 
-   public void setClientX(int clientX)
+   public void setOffsetX(int offsetX)
    {
-      this.clientX = clientX;
+      this.offsetX = offsetX;
    }
 
-   public int getClientY()
+   public int getOffsetY()
    {
-      return clientY;
+      return offsetY;
    }
 
-   public void setClientY(int clientY)
+   public void setOffsetY(int offsetY)
    {
-      this.clientY = clientY;
+      this.offsetY = offsetY;
    }
 
    public int getButton()

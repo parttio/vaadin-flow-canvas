@@ -10,11 +10,11 @@ public class MouseDblClickEvent extends MouseEvent
    public MouseDblClickEvent(
       Canvas source,
       boolean fromClient,
-      @EventData("event.clientX") int clientX,
-      @EventData("event.clientY") int clientY,
+      @EventData("event.offsetX") int offsetX,
+      @EventData("event.offsetX") int offsetY,
       @EventData("event.button") int button
    )
    {
-      super(source, fromClient, clientX, clientY, button);
+      super(source, fromClient, offsetX, offsetY, button);
    }
 }

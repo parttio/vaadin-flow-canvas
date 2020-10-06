@@ -16,6 +16,9 @@ public class DemoView extends Div {
     private CanvasRenderingContext2D ctx;
 
     public DemoView() {
+        Div label = new Div();
+        label.setText("The quick brown fox.");
+
         Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
         canvas.getStyle().set("border", "1px solid");
 
@@ -28,7 +31,7 @@ public class DemoView extends Div {
         buttons.add(new NativeButton("Clear canvas",
                 e -> ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)));
 
-        add(canvas, buttons);
+        add(label, canvas, buttons);
 
         Input input = new Input();
         input.setValue("resources/vaadin-logo.svg");
@@ -54,7 +57,7 @@ public class DemoView extends Div {
 
     private void logEvent(String eventType, MouseEvent me)
     {
-        System.out.println("mouse " + eventType + ": x=" + me.getClientX() + ", y=" + me.getClientY() + ", btn=" + me.getButton());
+        System.out.println("mouse " + eventType + ": x=" + me.getOffsetX() + ", y=" + me.getOffsetY() + ", btn=" + me.getButton());
     }
 
     private void drawPattern(String src)

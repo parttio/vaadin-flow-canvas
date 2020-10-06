@@ -10,11 +10,11 @@ public class MouseUpEvent extends MouseEvent
    public MouseUpEvent(
       Canvas source,
       boolean fromClient,
-      @EventData("event.clientX") int clientX,
-      @EventData("event.clientY") int clientY,
+      @EventData("event.offsetX") int offsetX,
+      @EventData("event.offsetY") int offsetY,
       @EventData("event.button") int button
    )
    {
-      super(source, fromClient, clientX, clientY, button);
+      super(source, fromClient, offsetX, offsetY, button);
    }
 }
