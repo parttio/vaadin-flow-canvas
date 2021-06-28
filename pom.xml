@@ -10,7 +10,7 @@
     <description>Integration of HTML5 canvas for Vaadin Platform</description>
 
     <properties>
-        <vaadin.version>12.0.0</vaadin.version>
+        <vaadin.version>14.6.2</vaadin.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
