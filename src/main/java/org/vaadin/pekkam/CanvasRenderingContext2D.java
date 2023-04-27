@@ -64,15 +64,12 @@ public class CanvasRenderingContext2D {
      *            the y-coordinate of the top-left corner of the image
      */
     public void drawImage(String src, double x, double y) {
-        runScript(String.format(
-        //@formatter:off
-            "var img = new Image();"
-          + "img.onload = function () {"
-          +   "$0.getContext('2d').drawImage(img, %s, %s);"
-          + "};"
-          + "img.src='%s';", x, y, src));
-        //@formatter:on
-    }
+        runScript("""
+            var img = new Image();
+            img.onload = function () {
+              $0.getContext('2d').drawImage(img, %s, %s);
+           };img.src='%s';""".formatted(x, y, src));
+}
 
     /**
      * Fetches the image from the given location and draws it on the canvas.
@@ -93,14 +90,12 @@ public class CanvasRenderingContext2D {
      */
     public void drawImage(String src, double x, double y, double width,
             double height) {
-        runScript(String.format(
-        //@formatter:off
-            "var img = new Image();"
-          + "img.onload = function () {"
-          +   "$0.getContext('2d').drawImage(img, %s, %s, %s, %s);"
-          + "};"
-          + "img.src='%s';", x, y, width, height, src));
-        //@formatter:on
+        runScript("""
+        var img = new Image();
+        img.onload = function () {
+          $0.getContext('2d').drawImage(img, %s, %s, %s, %s);
+        };
+        img.src='%s';""".formatted(x, y, width, height, src));
     }
 
     public void fill() {
@@ -160,7 +155,7 @@ public class CanvasRenderingContext2D {
     }
 
     protected void setProperty(String propertyName, Serializable value) {
-        runScript(String.format("$0.getContext('2d').%s='%s'", propertyName,
+        runScript("$0.getContext('2d').%s='%s'".formatted(propertyName,
                 value));
     }
 
@@ -174,12 +169,12 @@ public class CanvasRenderingContext2D {
                 // with Element.callFunction() which is used in callJsMethod()
                 ui -> ui.getInternals().getStateTree().beforeClientResponse(
                         canvas.getElement().getNode(),
-                        context -> ui.getPage().executeJavaScript(script,
+                        context -> ui.getPage().executeJs(script,
                                 canvas.getElement())));
     }
 
     protected void callJsMethod(String methodName, Serializable... parameters) {
-        canvas.getElement().callFunction("getContext('2d')." + methodName,
+        canvas.getElement().callJsFunction("getContext('2d')." + methodName,
                 parameters);
     }
 
