@@ -214,7 +214,7 @@ public class CanvasRenderingContext2D {
     }
 
     protected void setProperty(String propertyName, Serializable value) {
-        runScript(String.format("$0.getContext('2d').%s='%s'", propertyName,
+        runScript("$0.getContext('2d').%s='%s'".formatted(propertyName,
                 value));
     }
 
@@ -228,12 +228,12 @@ public class CanvasRenderingContext2D {
                 // with Element.callFunction() which is used in callJsMethod()
                 ui -> ui.getInternals().getStateTree().beforeClientResponse(
                         canvas.getElement().getNode(),
-                        context -> ui.getPage().executeJavaScript(script,
+                        context -> ui.getPage().executeJs(script,
                                 canvas.getElement())));
     }
 
     protected void callJsMethod(String methodName, Serializable... parameters) {
-        canvas.getElement().callFunction("getContext('2d')." + methodName,
+        canvas.getElement().callJsFunction("getContext('2d')." + methodName,
                 parameters);
     }
 
