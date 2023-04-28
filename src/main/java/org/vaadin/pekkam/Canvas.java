@@ -106,15 +106,15 @@ public class Canvas extends Component implements HasStyle, HasSize, KeyNotifier 
      */
     public void loadImage(String src)
     {
-        getElement().executeJavaScript(
-          "var img = new Image();"
-             + "var self = this;"
-             + "img.onload = function () {"
-             +   "if (!self.images) self.images = {};"
-             +   "self.images[$0] = img;"
-             +   "self.$server.imageLoaded($0);"
-             + "};"
-             + "img.src=$0;",
+        getElement().executeJs("""
+        var img = new Image();
+        var self = this;
+        img.onload = function () {
+            if (!self.images) self.images = {};
+            self.images[$0] = img;
+            self.$server.imageLoaded($0);
+        };
+        img.src=$0;""",
            src
         );
     }
