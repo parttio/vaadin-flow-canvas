@@ -39,3 +39,15 @@ mvn jetty:run
 ```
 
 This deploys the demo at `http://localhost:8080`
+
+## Cutting new release
+
+Before cutting a release, make sure the build passes properly locally and in GitHub Actions based verification build.
+
+To tag a release and increment versions, go the line-awesome subdirectory and issue:
+
+    mvn release:prepare release:clean
+
+Answer questions, defaults most often fine. Note that release:perform is not needed as there is a GitHub Action is set up build and to push release to Maven Central automatically.
+
+Directory will automatically pick up new releases within about half an hour, but if browser or Vaadin version support change, be sure to adjust the metadata in Vaadin Directory UI.
