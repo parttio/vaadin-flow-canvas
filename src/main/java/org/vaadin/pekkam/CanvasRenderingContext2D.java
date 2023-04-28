@@ -21,8 +21,48 @@ public class CanvasRenderingContext2D {
         setProperty("fillStyle", fillStyle);
     }
 
+    /**
+     * Set a pattern to use as a fill style. Must reference an image source previously loaded
+     * with Canvas.loadImage().
+     *
+     * @param src the path to the image resource
+     * @param type the pattern repeat type (see the Canvas API)
+     */
+    public void setPatternFillStyle(String src, String type)
+    {
+        runScript(String.format(
+           "if ($0.images) {"
+              + "var img = $0.images['%s'];"
+              + "if (img) {"
+              +   "var ctx = $0.getContext('2d');"
+              +   "var pat = ctx.createPattern(img, '%s');"
+              +   "ctx.fillStyle = pat;"
+              + "}"
+              + "}", src, type));
+    }
+
     public void setStrokeStyle(String strokeStyle) {
         setProperty("strokeStyle", strokeStyle);
+    }
+
+    /**
+     * Set a pattern to use as a strok -style. Must reference an image source previously loaded
+     * with Canvas.loadImage().
+     *
+     * @param src the path to the image resource
+     * @param type the pattern repeat type (see the Canvas API)
+     */
+    public void setPatternStrokeStyle(String src, String type)
+    {
+        runScript(String.format(
+           "if ($0.images) {"
+              + "var img = $0.images['%s'];"
+              + "if (img) {"
+              +   "var ctx = $0.getContext('2d');"
+              +   "var pat = ctx.createPattern(img, '%s');"
+              +   "ctx.strokeStyle = pat;"
+              + "}"
+              + "}", src, type));
     }
 
     public void setLineWidth(double lineWidth) {
@@ -53,8 +93,8 @@ public class CanvasRenderingContext2D {
     /**
      * Fetches the image from the given location and draws it on the canvas.
      * <p>
-     * <b>NOTE:</b> The drawing will happen asynchronously after the browser has
-     * received the image.
+     * <b>NOTE:</b> Unless you have previously loaded the image with Canvas.loadImage, the
+     * drawing will happen asynchronously after the browser has retrieved the image.
      * 
      * @param src
      *            the url of the image to draw
@@ -64,18 +104,28 @@ public class CanvasRenderingContext2D {
      *            the y-coordinate of the top-left corner of the image
      */
     public void drawImage(String src, double x, double y) {
-        runScript("""
-            var img = new Image();
-            img.onload = function () {
-              $0.getContext('2d').drawImage(img, %s, %s);
-           };img.src='%s';""".formatted(x, y, src));
-}
+        runScript(String.format(
+        //@formatter:off
+            "var img = null;"
+          + "if ($0.images) img = $0.images['%s'];"
+          + "if (img != null)"
+          + "  $0.getContext('2d').drawImage(img, %s, %s);"
+          + "else {"
+          + "  img = new Image();"
+          + "  img.onload = function () {"
+          + "    $0.getContext('2d').drawImage(img, %s, %s);"
+          + "  };"
+          + "  img.src='%s';"
+          + "}",
+           src, x, y, x, y, src));
+        //@formatter:on
+    }
 
     /**
      * Fetches the image from the given location and draws it on the canvas.
      * <p>
-     * <b>NOTE:</b> The drawing will happen asynchronously after the browser has
-     * received the image.
+     * <b>NOTE:</b> Unless you have previously loaded the image with Canvas.loadImage, the
+     * drawing will happen asynchronously after the browser has retrieved the image.
      * 
      * @param src
      *            the url of the image to draw
@@ -90,12 +140,21 @@ public class CanvasRenderingContext2D {
      */
     public void drawImage(String src, double x, double y, double width,
             double height) {
-        runScript("""
-        var img = new Image();
-        img.onload = function () {
-          $0.getContext('2d').drawImage(img, %s, %s, %s, %s);
-        };
-        img.src='%s';""".formatted(x, y, width, height, src));
+        runScript(String.format(
+        //@formatter:off
+           "var img = null;"
+              + "if ($0.images) img = $0.images['%s'];"
+              + "if (img != null)"
+              + "  $0.getContext('2d').drawImage(img, %s, %s, %s, %s);"
+              + "else {"
+              + "  img = new Image();"
+              + "  img.onload = function () {"
+              + "    $0.getContext('2d').drawImage(img, %s, %s, %s, %s);"
+              + "  };"
+              + "  img.src='%s';"
+              + "}",
+           src, x, y, width, height, x, y, width, height, src));
+        //@formatter:on
     }
 
     public void fill() {

@@ -37,7 +37,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Celera Internal Repository</name>
+            <url>file://i:/repository/maven</url>
+        </repository>
+    </distributionManagement>
     <repositories>
         <repository>
             <id>Vaadin Directory</id>

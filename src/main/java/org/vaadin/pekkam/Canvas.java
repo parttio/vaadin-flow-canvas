@@ -1,9 +1,8 @@
 package org.vaadin.pekkam;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.shared.Registration;
+import org.vaadin.pekkam.event.*;
 
 /**
  * Canvas component that you can draw shapes and images on. It's a Java wrapper
@@ -17,8 +16,7 @@ import com.vaadin.flow.component.Tag;
  */
 @Tag("canvas")
 @SuppressWarnings("serial")
-public class Canvas extends Component implements HasStyle, HasSize {
-
+public class Canvas extends Component implements HasStyle, HasSize, KeyNotifier {
     private CanvasRenderingContext2D context;
 
     /**
@@ -97,5 +95,63 @@ public class Canvas extends Component implements HasStyle, HasSize {
     @Override
     public void setSizeFull() {
         HasSize.super.setSizeFull();
+    }
+
+    /**
+     * Load an image resource an prepare it for use as a fill or stroke style. Since images are loaded
+     * asyncronously, you need to wait until you receive the associated ImageLoadEvent. Register an
+     * event listener using addImageLoadListener().
+     *
+     * @param src the path to the image resource
+     */
+    public void loadImage(String src)
+    {
+        getElement().executeJavaScript(
+          "var img = new Image();"
+             + "var self = this;"
+             + "img.onload = function () {"
+             +   "if (!self.images) self.images = {};"
+             +   "self.images[$0] = img;"
+             +   "self.$server.imageLoaded($0);"
+             + "};"
+             + "img.src=$0;",
+           src
+        );
+    }
+
+    @ClientCallable
+    public void imageLoaded(String src)
+    {
+        fireEvent(new ImageLoadEvent(this, true, src));
+    }
+
+    public Registration addMouseDownListener(ComponentEventListener<MouseDownEvent> listener)
+    {
+        return addListener(MouseDownEvent.class, listener);
+    }
+
+    public Registration addMouseUpListener(ComponentEventListener<MouseUpEvent> listener)
+    {
+        return addListener(MouseUpEvent.class, listener);
+    }
+
+    public Registration addMouseMoveListener(ComponentEventListener<MouseMoveEvent> listener)
+    {
+        return addListener(MouseMoveEvent.class, listener);
+    }
+
+    public Registration addMouseClickListener(ComponentEventListener<MouseClickEvent> listener)
+    {
+        return addListener(MouseClickEvent.class, listener);
+    }
+
+    public Registration addMouseDblClickListener(ComponentEventListener<MouseDblClickEvent> listener)
+    {
+        return addListener(MouseDblClickEvent.class, listener);
+    }
+
+    public Registration addImageLoadListener(ComponentEventListener<ImageLoadEvent> listener)
+    {
+        return addListener(ImageLoadEvent.class, listener);
     }
 }
