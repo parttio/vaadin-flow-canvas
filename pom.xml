@@ -3,11 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.vaadin.pekkam</groupId>
+    <groupId>org.parttio</groupId>
     <artifactId>canvas-java</artifactId>
     <version>2.0.0-SNAPSHOT</version>
     <name>Canvas Java</name>
-    <description>Integration of HTML5 canvas for Vaadin Platform</description>
+    <description>Integration of HTML5 canvas for Vaadin</description>
+    <url>https://github.com/parttio/LightChart</url>
 
     <properties>
         <vaadin.version>24.0.5</vaadin.version>
@@ -17,15 +18,46 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     <organization>
-        <name>Pekka Maanpää</name>
+        <name>Team Parttio</name>
     </organization>
+    <developers>
+        <developer>
+            <name>Pekka Maanpää</name>
+        </developer>
+        <developer>
+            <name>Matti Tahvonen</name>
+        </developer>
+        <developer>
+            <name>kkleinwi</name>
+        </developer>
+    </developers>
     <licenses>
         <license>
             <name>Apache 2</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <scm>
+        <url>https://github.com/parttio/vaadin-flow-canvas</url>
+        <connection>scm:git:git://github.com/parttio/vaadin-flow-canvas.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:/parttio/vaadin-flow-canvas.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/parttio/vaadin-flow-canvas/issues</url>
+    </issueManagement>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -37,24 +69,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Celera Internal Repository</name>
-            <url>file://i:/repository/maven</url>
-        </repository>
-    </distributionManagement>
-    <repositories>
-        <repository>
-            <id>Vaadin Directory</id>
-            <url>http://maven.vaadin.com/vaadin-addons</url>
-        </repository>
-        <repository>
-            <id>Vaadin prereleases</id>
-            <url>http://maven.vaadin.com/vaadin-prereleases</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -69,12 +83,14 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>3.1.0</version>
                 <configuration>
+                    <excludes>
+                        <exclude>META-INF/VAADIN/config/flow-build-info.json</exclude>
+                    </excludes>
                     <archive>
                         <index>true</index>
                         <manifest>
@@ -87,14 +103,13 @@
                     </archive>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>11.0.15</version>
                 <configuration>
-                    <scanIntervalSeconds>-1</scanIntervalSeconds>
-                    <!-- Use test scope because the UI/demo classes are in 
+                    <scan>0</scan>
+                    <!-- Use test scope because the UI/demo classes are in
                         the test package. -->
                     <useTestScope>true</useTestScope>
                     <supportedPackagings>
@@ -102,41 +117,43 @@
                     </supportedPackagings>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M7</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>directory</id>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.13</version>
+                        <extensions>true</extensions>
                         <configuration>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <descriptors>
-                                <descriptor>assembly/assembly.xml</descriptor>
-                            </descriptors>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                                <phase>install</phase>
-                            </execution>
-                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
-                                <phase>verify</phase>
                                 <goals>
                                     <goal>jar-no-fork</goal>
                                 </goals>
@@ -146,19 +163,35 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.4.1</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
-                                <phase>verify</phase>
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                         <configuration>
-                            <quiet>true</quiet>
-                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <!-- Prevent gpg from using pinentry programs -->
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
                         </configuration>
                     </plugin>
                 </plugins>

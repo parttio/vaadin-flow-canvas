@@ -1,17 +1,17 @@
 # Canvas Component for Vaadin 10+
 
-This is a Java integration of the HTML5 `<canvas>` for Vaadin Platform.
+This is a Java integration of the HTML5 `<canvas>` for Vaadin.
 
-Currently this add-on provides a subset of the [client-side JavaScript API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) to Java users.
+Currently, this add-on provides a subset of the [client-side JavaScript API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) to Java users.
 
 ## Usage Example
 
 Add the dependency to your Vaadin 10+ project's `pom.xml`:
 ```xml
 <dependency>
-    <groupId>org.vaadin.pekkam</groupId>
+    <groupId>org.parttio</groupId>
     <artifactId>canvas-java</artifactId>
-    <version>1.0.1</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@ ctx.closePath();
 ctx.stroke();
 ```
 
-More examples can be found in the [demo sources](https://github.com/pekam/vaadin-flow-canvas/blob/master/src/test/java/org/vaadin/pekkam/DemoView.java).
+More examples can be found in the [demo sources](https://github.com/parttio/vaadin-flow-canvas/blob/master/src/test/java/org/vaadin/pekkam/DemoView.java).
 
 ## Development Instructions
 
