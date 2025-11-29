@@ -4,6 +4,8 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.shared.Registration;
 import org.vaadin.pekkam.event.*;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * Canvas component that you can draw shapes and images on. It's a Java wrapper
  * for the
@@ -17,7 +19,7 @@ import org.vaadin.pekkam.event.*;
 @Tag("canvas")
 @SuppressWarnings("serial")
 public class Canvas extends Component implements HasStyle, HasSize, KeyNotifier {
-    private CanvasRenderingContext2D context;
+    private final CanvasRenderingContext2D context;
 
     /**
      * Creates a new canvas component with the given size.
@@ -153,5 +155,41 @@ public class Canvas extends Component implements HasStyle, HasSize, KeyNotifier 
     public Registration addImageLoadListener(ComponentEventListener<ImageLoadEvent> listener)
     {
         return addListener(ImageLoadEvent.class, listener);
+    }
+
+    /**
+     * <p>The <code>HTMLCanvasElement.toDataURL()</code> method returns a
+     * <a href="https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/data">data URL</a> containing a
+     * representation of the image in the format specified by the <code>type</code> parameter.</p>
+     * <p>The desired file format and image quality may be specified. If the file format is not specified, or if the given
+     * format is not supported, then the data will be exported as <code>image/png</code>. In other words, if the returned
+     * value starts with <code>data:image/png</code> for any other requested <code>type</code>, then that format is not
+     * supported.</p>
+     * <p>Browsers are required to support <code>image/png</code>; many will support additional formats including
+     * <code>image/jpeg</code> and <code>image/webp</code>.</p>
+     * <p>The created image data will have a resolution of 96dpi for file formats that support encoding resolution metadata.</p>
+     * <p>Warning: <code>toDataURL()</code> encodes the whole image in an in-memory string. For larger images, this can
+     * have performance implications, and may even overflow browsers' URL length limit when assigned to
+     * <code>HTMLImageElement.src</code>. You should generally prefer <code>toBlob()</code> instead, in combination with
+     * <code>URL.createObjectURL()</code>.</p>
+     *
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL">HTMLCanvasElement: toDataURL() method</a>
+     *
+     * @param type A string indicating the image format. The default type is <code>image/png</code>; this image format
+     *             will be also used if the specified type is not supported
+     * @param quality A Number between <code>0</code> and <code>1</code> indicating the image quality to be used when
+     *                creating images using file formats that support lossy compression (such as <code>image/jpeg</code>
+     *                or <code>image/webp</code>). A user agent will use its default quality value if this option is not
+     *                specified, or if the number is outside the allowed range.
+     * @return CompletableFuture&lt;String&gt; containing the requested data URL. If the height or width of the canvas is <code>0</code> or larger
+     *         than the maximum canvas size, the string <code>"data:,"</code> is returned.
+     */
+    public CompletableFuture<String> toDataURL(String type, Double quality) {
+        var dataUrlType = type != null ? type : "image/png";
+        var dataUrlQuality = quality != null && quality >= 0.0 && quality <= 1.0 ? quality : 1.0;
+
+        return getElement()
+                .callJsFunction("toDataURL", dataUrlType, dataUrlQuality)
+                .toCompletableFuture(String.class);
     }
 }
