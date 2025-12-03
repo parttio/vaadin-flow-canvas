@@ -1,11 +1,16 @@
 package org.vaadin.pekkam;
 
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Input;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.NativeButton;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 import org.vaadin.pekkam.event.MouseEvent;
+
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Route("")
 public class DemoView extends Div {
@@ -13,13 +18,14 @@ public class DemoView extends Div {
     private static final int CANVAS_WIDTH = 800;
     private static final int CANVAS_HEIGHT = 500;
 
-    private CanvasRenderingContext2D ctx;
+    private final Canvas canvas;
+    private final CanvasRenderingContext2D ctx;
 
     public DemoView() {
         Div label = new Div();
         label.setText("The quick brown fox.");
 
-        Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+        canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
         canvas.getStyle().set("border", "1px solid");
 
         ctx = canvas.getContext();
@@ -38,7 +44,7 @@ public class DemoView extends Div {
         NativeButton loadImageButton = new NativeButton("Load image", e -> canvas.loadImage(input.getValue()));
         NativeButton drawImageButton = new NativeButton("Draw image",
                 e -> ctx.drawImage(input.getValue(), 0, 0));
-        NativeButton drawPatButton = new NativeButton("Fill pattern", e->drawPattern(input.getValue()));
+        NativeButton drawPatButton = new NativeButton("Fill pattern", e -> drawPattern(input.getValue()));
         add(new Label("Image src: "), input, loadImageButton, drawImageButton, drawPatButton);
 
         canvas.getElement().setAttribute("tabindex", "1");
@@ -53,15 +59,20 @@ public class DemoView extends Div {
         canvas.addImageLoadListener(e -> {
             System.out.println("image loaded: " + e.getSrc());
         });
+
+        NativeButton downloadButton = new NativeButton("Download as PNG");
+        Anchor downloadAnchor = new Anchor();
+        downloadAnchor.add(downloadButton);
+        downloadAnchor.setHref(DownloadHandler.fromInputStream(downloadEvent -> downloadAsPNG(downloadEvent.getUI())));
+
+        add(new Div(downloadAnchor));
     }
 
-    private void logEvent(String eventType, MouseEvent me)
-    {
+    private void logEvent(String eventType, MouseEvent me) {
         System.out.println("mouse " + eventType + ": x=" + me.getOffsetX() + ", y=" + me.getOffsetY() + ", btn=" + me.getButton());
     }
 
-    private void drawPattern(String src)
-    {
+    private void drawPattern(String src) {
         ctx.save();
         ctx.setPatternFillStyle(src, "repeat");
         ctx.fillRect(200, 200, 100, 100);
@@ -103,5 +114,28 @@ public class DemoView extends Div {
     private String getRandomColor() {
         return String.format("rgb(%s, %s, %s)", (int) (Math.random() * 256),
                 (int) (Math.random() * 256), (int) (Math.random() * 256));
+    }
+
+    private DownloadResponse downloadAsPNG(UI ui) {
+        try {
+            var downloadResponse = new CompletableFuture<DownloadResponse>();
+
+            ui.access(() ->
+                    canvas.toDataURL("image/png", 1.0)
+                            .whenComplete((dataUrl, throwable) -> {
+                                var data = Base64.getDecoder().decode(dataUrl.split(",")[1]);
+                                downloadResponse.completeAsync(() -> new DownloadResponse(
+                                        new ByteArrayInputStream(data),
+                                        "Download_%d.png".formatted(System.currentTimeMillis()),
+                                        "image/png",
+                                        data.length
+                                ));
+                            })
+            );
+
+            return downloadResponse.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

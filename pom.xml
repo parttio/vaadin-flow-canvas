@@ -10,7 +10,7 @@
     <url>https://github.com/parttio/LightChart</url>
 
     <properties>
-        <vaadin.version>24.0.5</vaadin.version>
+        <vaadin.version>24.8.0</vaadin.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
