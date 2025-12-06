@@ -45,7 +45,8 @@ public class DemoView extends Div {
         NativeButton drawImageButton = new NativeButton("Draw image",
                 e -> ctx.drawImage(input.getValue(), 0, 0));
         NativeButton drawPatButton = new NativeButton("Fill pattern", e -> drawPattern(input.getValue()));
-        add(new Label("Image src: "), input, loadImageButton, drawImageButton, drawPatButton);
+        NativeButton drawClipButton = new NativeButton("Clip image", e -> drawClip(input.getValue()));
+        add(new Label("Image src: "), input, loadImageButton, drawImageButton, drawPatButton, drawClipButton);
 
         canvas.getElement().setAttribute("tabindex", "1");
         canvas.addMouseDownListener(e -> logEvent("down", e));
@@ -108,6 +109,25 @@ public class DemoView extends Div {
         ctx.closePath();
         ctx.stroke();
         ctx.fill();
+        ctx.restore();
+    }
+
+    private void drawClip(String src) {
+        ctx.save();
+
+        ctx.beginPath();
+
+        ctx.setLineWidth(2);
+        ctx.setStrokeStyle(getRandomColor());
+        ctx.arc(450, 250, 45, 0, 2 * Math.PI, false);
+        ctx.stroke();
+
+        ctx.setFillStyle(getRandomColor());
+        ctx.fill();
+
+        ctx.clip();
+        ctx.drawImage(src, 350, 233, 150, 34);
+
         ctx.restore();
     }
 
