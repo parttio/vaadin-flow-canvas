@@ -7,25 +7,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
-          server-id: ossrh
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_PASSWORD
-          gpg-private-key: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: Set up Node 18
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+          server-id: central
+          server-username: CENTRAL_U
+          server-password: CENTRAL_T
       - name: Publish to Apache Maven Central
         run: mvn -Prelease deploy
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PW }}
+          CENTRAL_T: ${{ secrets.CENTRAL_TOKEN }}
+          CENTRAL_U: ${{ secrets.CENTRAL_USER }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+          MAVEN_GPG_KEY: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          
