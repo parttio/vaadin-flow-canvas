@@ -4,7 +4,7 @@
 
     <groupId>org.parttio</groupId>
     <artifactId>canvas-java</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.1.0</version>
     <name>Canvas Java</name>
     <description>Integration of HTML5 canvas for Vaadin</description>
     <url>https://github.com/parttio/LightChart</url>
@@ -42,7 +42,7 @@
         <url>https://github.com/parttio/vaadin-flow-canvas</url>
         <connection>scm:git:git://github.com/parttio/vaadin-flow-canvas.git</connection>
         <developerConnection>scm:git:ssh://git@github.com:/parttio/vaadin-flow-canvas.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>canvas-java-2.1.0</tag>
     </scm>
 
     <issueManagement>
