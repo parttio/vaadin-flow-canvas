@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 public class CanvasRenderingContext2D {
 
-    private Canvas canvas;
+    private final Canvas canvas;
 
     protected CanvasRenderingContext2D(Canvas canvas) {
         this.canvas = canvas;
@@ -200,6 +200,10 @@ public class CanvasRenderingContext2D {
 
     public void translate(double x, double y) {
         callJsMethod("translate", x, y);
+    }
+
+    public void clip() {
+        this.callJsMethod("clip");
     }
 
     protected void setProperty(String propertyName, Serializable value) {
