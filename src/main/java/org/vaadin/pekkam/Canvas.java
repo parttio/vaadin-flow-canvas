@@ -1,9 +1,21 @@
 package org.vaadin.pekkam;
 
-import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.ClientCallable;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasSize;
+import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.KeyNotifier;
+import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.shared.Registration;
-import org.vaadin.pekkam.event.*;
+import org.vaadin.pekkam.event.ImageLoadEvent;
+import org.vaadin.pekkam.event.MouseClickEvent;
+import org.vaadin.pekkam.event.MouseDblClickEvent;
+import org.vaadin.pekkam.event.MouseDownEvent;
+import org.vaadin.pekkam.event.MouseMoveEvent;
+import org.vaadin.pekkam.event.MouseUpEvent;
 
+import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -191,5 +203,23 @@ public class Canvas extends Component implements HasStyle, HasSize, KeyNotifier 
         return getElement()
                 .callJsFunction("toDataURL", dataUrlType, dataUrlQuality)
                 .toCompletableFuture(String.class);
+    }
+
+    /**
+     * The canvas content as a raster image.
+     *
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL">HTMLCanvasElement: toDataURL() method</a>
+     *
+     * @param type A string indicating the image format. The default type is <code>image/png</code>; this image format
+     *             will be also used if the specified type is not supported
+     * @param quality A Number between <code>0</code> and <code>1</code> indicating the image quality to be used when
+     *                creating images using file formats that support lossy compression (such as <code>image/jpeg</code>
+     *                or <code>image/webp</code>). A user agent will use its default quality value if this option is not
+     *                specified, or if the number is outside the allowed range.
+     * @return CompletableFuture of the raster image data. If the height or width of the canvas is <code>0</code> or larger
+     *         than the maximum canvas size, empty byte[] is returned.
+     */
+    public CompletableFuture<byte[]> toImage(String type, Double quality) {
+        return toDataURL(type, quality).thenApply(dataUrl -> Base64.getDecoder().decode(dataUrl.split(",")[1]));
     }
 }

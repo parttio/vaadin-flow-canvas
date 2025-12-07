@@ -1,9 +1,12 @@
 package org.vaadin.pekkam;
 
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Input;
+import com.vaadin.flow.component.html.NativeButton;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.server.streams.DownloadResponse;
 import org.vaadin.pekkam.event.MouseEvent;
 
@@ -46,7 +49,7 @@ public class DemoView extends Div {
                 e -> ctx.drawImage(input.getValue(), 0, 0));
         NativeButton drawPatButton = new NativeButton("Fill pattern", e -> drawPattern(input.getValue()));
         NativeButton drawClipButton = new NativeButton("Clip image", e -> drawClip(input.getValue()));
-        add(new Label("Image src: "), input, loadImageButton, drawImageButton, drawPatButton, drawClipButton);
+        add(new Span("Image src: "), input, loadImageButton, drawImageButton, drawPatButton, drawClipButton);
 
         canvas.getElement().setAttribute("tabindex", "1");
         canvas.addMouseDownListener(e -> logEvent("down", e));
@@ -61,12 +64,26 @@ public class DemoView extends Div {
             System.out.println("image loaded: " + e.getSrc());
         });
 
-        NativeButton downloadButton = new NativeButton("Download as PNG");
-        Anchor downloadAnchor = new Anchor();
-        downloadAnchor.add(downloadButton);
-        downloadAnchor.setHref(DownloadHandler.fromInputStream(downloadEvent -> downloadAsPNG(downloadEvent.getUI())));
+        NativeButton showAsRasterImageBtn = new NativeButton("Show as raster image", event -> {
+            canvas.toDataURL("image/png", 1.0).thenAccept(str -> {
+                Image image = new Image();
+                image.setSrc(str);
+                add(image);
+            });
+        });
 
-        add(new Div(downloadAnchor));
+        add(showAsRasterImageBtn);
+
+        NativeButton downloadButton = new NativeButton("Download as PNG");
+        downloadButton.addClickListener(event -> {
+            canvas.toImage("image/png", 1.0).thenAccept(bb -> {
+                DynamicDownload.download(de -> {
+                    de.setFileName("canvas.png");
+                    de.getOutputStream().write(bb);
+                });
+            });
+        });
+        add(new Div(downloadButton));
     }
 
     private void logEvent(String eventType, MouseEvent me) {
@@ -136,26 +153,4 @@ public class DemoView extends Div {
                 (int) (Math.random() * 256), (int) (Math.random() * 256));
     }
 
-    private DownloadResponse downloadAsPNG(UI ui) {
-        try {
-            var downloadResponse = new CompletableFuture<DownloadResponse>();
-
-            ui.access(() ->
-                    canvas.toDataURL("image/png", 1.0)
-                            .whenComplete((dataUrl, throwable) -> {
-                                var data = Base64.getDecoder().decode(dataUrl.split(",")[1]);
-                                downloadResponse.completeAsync(() -> new DownloadResponse(
-                                        new ByteArrayInputStream(data),
-                                        "Download_%d.png".formatted(System.currentTimeMillis()),
-                                        "image/png",
-                                        data.length
-                                ));
-                            })
-            );
-
-            return downloadResponse.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
