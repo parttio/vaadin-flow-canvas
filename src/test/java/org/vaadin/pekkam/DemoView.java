@@ -1,19 +1,10 @@
 package org.vaadin.pekkam;
 
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Input;
-import com.vaadin.flow.component.html.NativeButton;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.streams.DownloadResponse;
 import org.vaadin.pekkam.event.MouseEvent;
 
-import java.io.ByteArrayInputStream;
-import java.util.Base64;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.awt.geom.Point2D;
 
 @Route("")
 public class DemoView extends Div {
@@ -36,7 +27,9 @@ public class DemoView extends Div {
         Div buttons = new Div();
         buttons.add(new NativeButton("Draw random circle",
                 e -> drawRandomCircle()));
+        buttons.add(new NativeButton("Draw ellipse", e -> drawEllipse()));
         buttons.add(new NativeButton("Draw house", e -> drawHouse()));
+        buttons.add(new NativeButton("Draw curves", e -> drawCurves()));
         buttons.add(new NativeButton("Clear canvas",
                 e -> ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)));
 
@@ -146,6 +139,56 @@ public class DemoView extends Div {
         ctx.drawImage(src, 350, 233, 150, 34);
 
         ctx.restore();
+    }
+
+    private void drawCurves() {
+        var p1 = new Point2D.Double(100, 50);
+        var p2 = new Point2D.Double(150, 50);
+        var p3 = new Point2D.Double(150, 100);
+        var p4 = new Point2D.Double(150, 150);
+        var p5 = new Point2D.Double(100, 150);
+        var p6 = new Point2D.Double(50, 150);
+        var p7 = new Point2D.Double(50, 100);
+        var p8 = new Point2D.Double(50, 50);
+
+        ctx.save();
+        ctx.setLineWidth(1);
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.arcTo(p2.x, p2.y, p3.x, p3.y, 25);
+        ctx.arcTo(p4.x, p4.y, p5.x, p5.y, 25);
+        ctx.arcTo(p6.x, p6.y, p7.x, p7.y, 25);
+        ctx.arcTo(p8.x, p8.y, p1.x, p1.y, 25);
+        ctx.closePath();
+
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.quadraticCurveTo(p7.x, p7.y, p5.x, p5.y);
+        ctx.quadraticCurveTo(p3.x, p3.y, p1.x, p1.y);
+        ctx.bezierCurveTo(p3.x, p3.y, p7.x, p7.y, p5.x, p5.y);
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    private void drawEllipse() {
+        // Draw the ellipse
+        ctx.beginPath();
+        ctx.ellipse(100, 100, 50, 75, Math.PI / 4, 0, 2 * Math.PI);
+        ctx.stroke();
+
+        // Draw the ellipse's line of reflection
+        ctx.beginPath();
+        ctx.setLineDash(10, 5, 1, 5);
+        ctx.moveTo(0, 200);
+        ctx.lineTo(200, 0);
+        ctx.stroke();
+
+        ctx.setLineDash();
     }
 
     private String getRandomColor() {

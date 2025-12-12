@@ -4,6 +4,8 @@ This is a Java integration of the HTML5 `<canvas>` for Vaadin.
 
 Currently, this add-on provides a subset of the [client-side JavaScript API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) to Java users.
 
+See [Feature Matrix](doc/feature_matrix.md) for details.
+
 ## Usage Example
 
 Add the dependency to your Vaadin 10+ project's `pom.xml`:
