@@ -2,9 +2,16 @@ package org.vaadin.pekkam;
 
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.router.Route;
+import in.virit.color.Color;
+import in.virit.color.RgbColor;
+import in.virit.color.NamedColor;
 import org.vaadin.pekkam.event.MouseEvent;
+import org.vaadin.pekkam.model.Font;
+import org.vaadin.pekkam.model.Repetition;
 
 import java.awt.geom.Point2D;
+
+import static org.vaadin.pekkam.CanvasRenderingContext2D.degreeToRadian;
 
 @Route("")
 public class DemoView extends Div {
@@ -30,6 +37,7 @@ public class DemoView extends Div {
         buttons.add(new NativeButton("Draw ellipse", e -> drawEllipse()));
         buttons.add(new NativeButton("Draw house", e -> drawHouse()));
         buttons.add(new NativeButton("Draw curves", e -> drawCurves()));
+        buttons.add(new NativeButton("Draw Text", e -> drawText()));
         buttons.add(new NativeButton("Clear canvas",
                 e -> ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)));
 
@@ -85,25 +93,24 @@ public class DemoView extends Div {
 
     private void drawPattern(String src) {
         ctx.save();
-        ctx.setPatternFillStyle(src, "repeat");
-        ctx.fillRect(200, 200, 100, 100);
+        ctx.setFillStyle(src, Repetition.REPEAT);
+        ctx.fillRect(new Point2D.Double(200, 200), 100, 100);
         ctx.restore();
     }
 
     private void drawHouse() {
         ctx.save();
-
-        ctx.setFillStyle("yellow");
-        ctx.strokeRect(200, 200, 100, 100);
-        ctx.fillRect(200, 200, 100, 100);
+        ctx.setFillStyle(NamedColor.YELLOW);
+        ctx.strokeRect(new Point2D.Double(200, 200), 100, 100);
+        ctx.fillRect(new Point2D.Double(200, 200), 100, 100);
 
         ctx.beginPath();
-        ctx.moveTo(180, 200);
-        ctx.lineTo(250, 150);
-        ctx.lineTo(320, 200);
+        ctx.moveTo(new Point2D.Double(180, 200));
+        ctx.lineTo(new Point2D.Double(250, 150));
+        ctx.lineTo(new Point2D.Double(320, 200));
         ctx.closePath();
         ctx.stroke();
-        ctx.setFillStyle("orange");
+        ctx.setFillStyle(NamedColor.ORANGE);
         ctx.fill();
 
         ctx.restore();
@@ -114,8 +121,8 @@ public class DemoView extends Div {
         ctx.setLineWidth(2);
         ctx.setFillStyle(getRandomColor());
         ctx.beginPath();
-        ctx.arc(Math.random() * CANVAS_WIDTH, Math.random() * CANVAS_HEIGHT,
-                10 + Math.random() * 90, 0, 2 * Math.PI, false);
+        ctx.arc(new Point2D.Double(Math.random() * CANVAS_WIDTH, Math.random() * CANVAS_HEIGHT),
+                10 + Math.random() * 90, degreeToRadian(0), degreeToRadian(360), false);
         ctx.closePath();
         ctx.stroke();
         ctx.fill();
@@ -129,14 +136,14 @@ public class DemoView extends Div {
 
         ctx.setLineWidth(2);
         ctx.setStrokeStyle(getRandomColor());
-        ctx.arc(450, 250, 45, 0, 2 * Math.PI, false);
+        ctx.arc(new Point2D.Double(450, 250), 45, degreeToRadian(0), degreeToRadian(360), false);
         ctx.stroke();
 
         ctx.setFillStyle(getRandomColor());
         ctx.fill();
 
         ctx.clip();
-        ctx.drawImage(src, 350, 233, 150, 34);
+        ctx.drawImage(src, new Point2D.Double(350, 233), 150, 34);
 
         ctx.restore();
     }
@@ -156,19 +163,19 @@ public class DemoView extends Div {
 
         ctx.beginPath();
         ctx.moveTo(p1.x, p1.y);
-        ctx.arcTo(p2.x, p2.y, p3.x, p3.y, 25);
-        ctx.arcTo(p4.x, p4.y, p5.x, p5.y, 25);
-        ctx.arcTo(p6.x, p6.y, p7.x, p7.y, 25);
-        ctx.arcTo(p8.x, p8.y, p1.x, p1.y, 25);
+        ctx.arcTo(p2, p3, 25);
+        ctx.arcTo(p4, p5, 25);
+        ctx.arcTo(p6, p7, 25);
+        ctx.arcTo(p8, p1, 25);
         ctx.closePath();
 
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.quadraticCurveTo(p7.x, p7.y, p5.x, p5.y);
-        ctx.quadraticCurveTo(p3.x, p3.y, p1.x, p1.y);
-        ctx.bezierCurveTo(p3.x, p3.y, p7.x, p7.y, p5.x, p5.y);
+        ctx.moveTo(p1);
+        ctx.quadraticCurveTo(p7, p5);
+        ctx.quadraticCurveTo(p3, p1);
+        ctx.bezierCurveTo(p3, p7, p5);
 
         ctx.stroke();
 
@@ -178,21 +185,34 @@ public class DemoView extends Div {
     private void drawEllipse() {
         // Draw the ellipse
         ctx.beginPath();
-        ctx.ellipse(100, 100, 50, 75, Math.PI / 4, 0, 2 * Math.PI);
+        ctx.ellipse(new Point2D.Double(100, 100), 50, 75, degreeToRadian(45), 0, degreeToRadian(360), true);
         ctx.stroke();
 
         // Draw the ellipse's line of reflection
         ctx.beginPath();
         ctx.setLineDash(10, 5, 1, 5);
-        ctx.moveTo(0, 200);
-        ctx.lineTo(200, 0);
+        ctx.moveTo(new Point2D.Double(0, 200));
+        ctx.lineTo(new Point2D.Double(200, 0));
         ctx.stroke();
 
         ctx.setLineDash();
     }
 
-    private String getRandomColor() {
-        return String.format("rgb(%s, %s, %s)", (int) (Math.random() * 256),
+    private void drawText() {
+        ctx.beginPath();
+
+        ctx.setFont(Font.builder()
+                .size(24)
+                .variant(Font.Variant.SMALL_CAPS)
+                .family(Font.Family.MONOSPACE)
+                .build());
+        ctx.setLineWidth(2.0);
+        ctx.setStrokeStyle(getRandomColor());
+        ctx.strokeText("Stroke Text", new Point2D.Double(300, 300));
+    }
+
+    private Color getRandomColor() {
+        return new RgbColor((int) (Math.random() * 256),
                 (int) (Math.random() * 256), (int) (Math.random() * 256));
     }
 

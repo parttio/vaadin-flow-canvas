@@ -1,5 +1,10 @@
 package org.vaadin.pekkam;
 
+import in.virit.color.Color;
+import org.vaadin.pekkam.model.Font;
+import org.vaadin.pekkam.model.Repetition;
+
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -19,8 +24,17 @@ public class CanvasRenderingContext2D {
         this.canvas = canvas;
     }
 
+    public void setFillStyle(Color color) {
+        setFillStyle(color.toRgbColor().toString());
+    }
+
+
     public void setFillStyle(String fillStyle) {
         setProperty("fillStyle", fillStyle);
+    }
+
+    public void setFillStyle(String image, Repetition repetition) {
+        setPatternFillStyle(image, repetition.toString());
     }
 
     /**
@@ -43,8 +57,16 @@ public class CanvasRenderingContext2D {
                         }""".formatted(src, type));
     }
 
+    public void setStrokeStyle(Color color) {
+        setStrokeStyle(color.toRgbColor().toString());
+    }
+
     public void setStrokeStyle(String strokeStyle) {
         setProperty("strokeStyle", strokeStyle);
+    }
+
+    public void setStrokeStyle(String image, Repetition repetition) {
+        setPatternStrokeStyle(image, repetition.toString());
     }
 
     /**
@@ -71,13 +93,25 @@ public class CanvasRenderingContext2D {
         setProperty("lineWidth", lineWidth);
     }
 
+    public void setFont(Font font) {
+        setFont(font.toString());
+    }
+
     public void setFont(String font) {
         setProperty("font", font);
+    }
+
+    public void arc(Point2D.Double center, double radius, double startAngle, double endAngle, boolean antiClockwise) {
+        arc(center.x, center.y, radius, startAngle, endAngle, antiClockwise);
     }
 
     public void arc(double x, double y, double radius, double startAngle,
                     double endAngle, boolean antiClockwise) {
         callJsMethod("arc", x, y, radius, startAngle, endAngle, antiClockwise);
+    }
+
+    public void arcTo(Point2D.Double p1, Point2D.Double p2, double radius) {
+        arcTo(p1.x, p1.y, p2.x, p2.y, radius);
     }
 
     /**
@@ -97,6 +131,10 @@ public class CanvasRenderingContext2D {
 
     public void beginPath() {
         callJsMethod("beginPath");
+    }
+
+    public void bezierCurveTo(Point2D.Double cp1, Point2D.Double cp2, Point2D.Double endPoint) {
+        bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, endPoint.x, endPoint.y);
     }
 
     /**
@@ -119,6 +157,10 @@ public class CanvasRenderingContext2D {
         callJsMethod("bezierCurveTo", cp1x, cp1y, cp2x, cp2y, x, y);
     }
 
+    public void clearRect(Point2D.Double p, double width, double height) {
+        clearRect(p.x, p.y, width, height);
+    }
+
     public void clearRect(double x, double y, double width, double height) {
         callJsMethod("clearRect", x, y, width, height);
     }
@@ -127,12 +169,20 @@ public class CanvasRenderingContext2D {
         callJsMethod("closePath");
     }
 
+    public void ellipse(Point2D.Double center, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, boolean clockwise) {
+        ellipse(center.x, center.y, radiusX, radiusY, rotation, startAngle, endAngle, clockwise);
+    }
+
     public void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle) {
         callJsMethod("ellipse", x, y, radiusX, radiusY, rotation, startAngle, endAngle, true);
     }
 
     public void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, boolean clockwise) {
         callJsMethod("ellipse", x, y, radiusX, radiusY, rotation, startAngle, endAngle, clockwise);
+    }
+
+    public void drawImage(String src, Point2D.Double p) {
+        drawImage(src, p.x, p.y);
     }
 
     /**
@@ -158,6 +208,10 @@ public class CanvasRenderingContext2D {
                   };
                   img.src='%s';
                 }""".formatted(src, x, y, x, y, src));
+    }
+
+    public void drawImage(String src, Point2D.Double p, double width, double height) {
+        drawImage(src, p.x, p.y, width, height);
     }
 
     /**
@@ -193,20 +247,40 @@ public class CanvasRenderingContext2D {
         callJsMethod("fill");
     }
 
+    public void fillRect(Point2D.Double p, double width, double height) {
+        fillRect(p.x, p.y, width, height);
+    }
+
     public void fillRect(double x, double y, double width, double height) {
         callJsMethod("fillRect", x, y, width, height);
+    }
+
+    public void fillText(String text, Point2D.Double p) {
+        fillText(text, p.x, p.y);
     }
 
     public void fillText(String text, double x, double y) {
         callJsMethod("fillText", text, x, y);
     }
 
+    public void lineTo(Point2D.Double p) {
+        lineTo(p.x, p.y);
+    }
+
     public void lineTo(double x, double y) {
         callJsMethod("lineTo", x, y);
     }
 
+    public void moveTo(Point2D.Double p) {
+        moveTo(p.x, p.y);
+    }
+
     public void moveTo(double x, double y) {
         callJsMethod("moveTo", x, y);
+    }
+
+    public void quadraticCurveTo(Point2D.Double cp, Point2D.Double endPoint) {
+        quadraticCurveTo(cp.x, cp.y, endPoint.x, endPoint.y);
     }
 
     /**
@@ -226,6 +300,10 @@ public class CanvasRenderingContext2D {
      */
     public void quadraticCurveTo(double cpx, double cpy, double x, double y) {
         callJsMethod("quadraticCurveTo", cpx, cpy, x, y);
+    }
+
+    public void rect(Point2D.Double p, double width, double height) {
+        rect(p.x, p.y, width, height);
     }
 
     public void rect(double x, double y, double width, double height) {
@@ -257,12 +335,32 @@ public class CanvasRenderingContext2D {
         callJsMethod("stroke");
     }
 
+    public void strokeRect(Point2D.Double point, double width, double height) {
+        strokeRect(point.x, point.y, width, height);
+    }
+
     public void strokeRect(double x, double y, double width, double height) {
         callJsMethod("strokeRect", x, y, width, height);
     }
 
+    public void strokeText(String text, Point2D.Double point) {
+        strokeText(text, point.x, point.y);
+    }
+
     public void strokeText(String text, double x, double y) {
         callJsMethod("strokeText", text, x, y);
+    }
+
+    public void strokeText(String text, Point2D.Double point, double maxWidth) {
+        strokeText(text, point.x, point.y, maxWidth);
+    }
+
+    public void strokeText(String text, double x, double y, double maxWidth) {
+        callJsMethod("strokeText", text, x, y, maxWidth);
+    }
+
+    public void translate(Point2D.Double point) {
+        translate(point.x, point.y);
     }
 
     public void translate(double x, double y) {
@@ -273,7 +371,7 @@ public class CanvasRenderingContext2D {
         this.callJsMethod("clip");
     }
 
-    protected void setProperty(String propertyName, Serializable value) {
+    private void setProperty(String propertyName, Serializable value) {
         runScript("$0.getContext('2d').%s='%s'".formatted(propertyName,
                 value));
     }
@@ -292,9 +390,12 @@ public class CanvasRenderingContext2D {
                                 canvas.getElement())));
     }
 
-    protected void callJsMethod(String methodName, Serializable... parameters) {
+    private void callJsMethod(String methodName, Serializable... parameters) {
         canvas.getElement().callJsFunction("getContext('2d')." + methodName,
                 parameters);
     }
 
+    public static double degreeToRadian(int degree) {
+        return degree * Math.PI / 180;
+    }
 }
